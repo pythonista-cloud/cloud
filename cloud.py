@@ -21,12 +21,23 @@ special_cases = {
 class CloudImportHandler(object):
     """Implements custom behavior when running 'from cloud import x'"""
     def __getattr__(self, key):
-        """ Add a module named 'key' from the index into your namespace """
-        # There are some cases in which we shouldn't retrieve an actual module
+        """ Add a module named 'key' from the index into your namespace.
+
+        There are some cases in which it is inappropriate to return a module
+        for a requested name, including:
+        - internally used module attributes like __path__
+        - parts of the cloud API, like cloud.update
+
+        If the requested name does not fit any of these cases, we search the
+        index, download the module, and return it to the user.
+        """
+        # The module shouldn't be downloaded
         if key in special_cases:
             return special_cases[key]
-
-        # Install the module, return its contents
+        # The module is already installed
+        elif key in sys.modules:
+            return sys.modules[key]
+        # The module is not installed.
         else:
             mod = _cloud.Module(key)
             mod.download()
