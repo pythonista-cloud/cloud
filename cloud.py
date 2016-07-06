@@ -5,6 +5,7 @@ This module serves as the main interface.
 import sys
 
 import _cloud
+import _cloud.submitter
 
 
 special_cases = {
@@ -54,8 +55,7 @@ class CloudImportHandler(object):
         """Re-download the latest version of a module."""
         if module_name not in sys.modules:
             raise AttributeError(("Module '{}' not installed, install via "
-                                  "'from cloud import {}'").format(
-                                      module_name, module_name))
+            "'from cloud import {}'").format(module_name, module_name))
         else:
             mod = _cloud.Module(module_name)
             mod.download()
@@ -66,6 +66,9 @@ class CloudImportHandler(object):
         """Used to require specific module versions."""
         raise NotImplementedError("Coming soon!")
 
+    def submit(self, **kwargs):
+        """Submit a package to the index."""
+        _cloud.submitter.submit_module(kwargs)
 
 if __name__ != "__main__":
     # This is being imported
@@ -73,3 +76,4 @@ if __name__ != "__main__":
 else:
     # This is being run normally
     pass
+
