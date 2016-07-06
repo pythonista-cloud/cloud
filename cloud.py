@@ -7,21 +7,24 @@ import sys
 
 import _cloud
 
+
 special_cases = {
     # Python stuff. I have no idea what these should actually be, but None
     # seems to work for now.
     "__spec__": None,
     "__path__": None,
-    # Other parts of pythonista.cloud
-    "config": lambda: exec("raise NotImplementedError('Coming soon!')"),
-    "update": lambda: exec("raise NotImplementedError('Coming soon!')")
 }
 
 
 class CloudImportHandler(object):
-    """Implements custom behavior when running 'from cloud import x'"""
+    """Handles all requests to the cloud module
+
+    This includes:
+    - from cloud import x
+    - methods as part of the client API, such as update
+    """
     def __getattr__(self, key):
-        """ Add a module named 'key' from the index into your namespace.
+        """Add a module named 'key' from the index into your namespace.
 
         There are some cases in which it is inappropriate to return a module
         for a requested name, including:
@@ -45,8 +48,16 @@ class CloudImportHandler(object):
             return mod.importme()
 
     def __contains__(self, key):
-        """ Allows syntax of 'x in cloud' """
+        """Allows syntax of 'x in cloud' to check the index"""
         pass
+
+    def update(self, module_name):
+        """Re-download the latest version of a module."""
+        raise NotImplementedError("Coming soon!")
+
+    def config(self, **kwargs):
+        """Used to require specific module versions."""
+        raise NotImplementedError("Coming soon!")
 
 
 if __name__ != "__main__":
