@@ -23,8 +23,8 @@ class CloudImportHandler(object):
     - from cloud import x
     - methods as part of the client API, such as update
     """
-    def __getattr__(self, key):
-        """Add a module named 'key' from the index into your namespace.
+    def __getattr__(self, module_name):
+        """Return a module object from the index
 
         There are some cases in which it is inappropriate to return a module
         for a requested name, including:
@@ -35,19 +35,19 @@ class CloudImportHandler(object):
         index, download the module, and return it to the user.
         """
         # The module shouldn't be downloaded
-        if key in special_cases:
-            return special_cases[key]
+        if module_name in special_cases:
+            return special_cases[module_name]
         # The module is already installed
-        elif key in sys.modules:
-            return sys.modules[key]
+        elif module_name in sys.modules:
+            return sys.modules[module_name]
         # The module is not installed.
         else:
-            mod = _cloud.Module(key)
+            mod = _cloud.Module(module_name)
             mod.download()
             mod.install()
             return mod.importme()
 
-    def __contains__(self, key):
+    def __contains__(self, module_name):
         """Allows syntax of 'x in cloud' to check the index"""
         pass
 
