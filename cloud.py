@@ -2,7 +2,6 @@
 
 This module serves as the main interface.
 """
-
 import sys
 
 import _cloud
@@ -53,7 +52,15 @@ class CloudImportHandler(object):
 
     def update(self, module_name):
         """Re-download the latest version of a module."""
-        raise NotImplementedError("Coming soon!")
+        if module_name not in sys.modules:
+            raise AttributeError(("Module '{}' not installed, install via "
+                                  "'from cloud import {}'").format(
+                                      module_name, module_name))
+        else:
+            mod = _cloud.Module(module_name)
+            mod.download()
+            mod.install()
+            return mod.importme()
 
     def config(self, **kwargs):
         """Used to require specific module versions."""
