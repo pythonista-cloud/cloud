@@ -9,10 +9,11 @@ from _cloud import downloader, installer
 
 
 class Module(object):
+    """The magical API around downloading / installing / importing things."""
+    
     _zip = None
     metadata = None
 
-    """The magical API around downloading / installing / importing things."""
     def __init__(self, name):
         self.name = name
         self.downloaded = False
