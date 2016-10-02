@@ -29,6 +29,6 @@ def download(module_name):
     url = metadata["url"]
     zip_url = os.path.join(url, "archive/master.zip")
     req = requests.get(zip_url)
-    zip = io.BytesIO(req.content)
+    zipfile = io.BytesIO(req.content)
 
-    return zip, metadata
+    return zipfile, metadata

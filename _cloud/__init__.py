@@ -9,7 +9,8 @@ from _cloud import downloader, installer
 
 
 class Module(object):
-    """The magical API around downloading / installing /Â importing things."""
+    """The magical API around downloading / installing / importing things."""
+
     def __init__(self, name):
         self.name = name
         self.downloaded = False
@@ -23,13 +24,13 @@ class Module(object):
 
     def download(self):
         """Download a module to a BytesIO as a zip file."""
-        self._zip, self.metadata = downloader.download(self.name)
+        self.zipfile, self.metadata = downloader.download(self.name)
         self.downloaded = True
         return True
 
     def install(self):
         """Install a module from an in-memory zip."""
-        installer.install(self._zip, self.metadata)
+        installer.install(self.zipfile, self.metadata)
 
     def importme(self):
         """Return a module object for this module."""
